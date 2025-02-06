@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             BookingSeeder::class,
             RegisterSeeder::class,
+            PetSeeder::class,
         ]);
     }
 

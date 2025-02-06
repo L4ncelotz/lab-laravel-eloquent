@@ -48,14 +48,6 @@ Route::resource('chirps', ChirpController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);// ใช้งานได้เฉพาะผู้ที่ล็อกอิน
 
-// แสดงข้อมูลพนักงาน
-Route::get('/employees  ', [EmployeeController::class, 'index'])->name('employees.index');
-
-Route::get('/employee/create', [EmployeeController::class, 'create'])->name('employee.create');
-Route::post('/employee', [EmployeeController::class, 'store'])->name('employee.store');
-Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
-Route::resource('employees', EmployeeController::class);
-
 Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
 Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
 
@@ -70,9 +62,9 @@ Route::get('/rooms/{room}', [RoomController::class, 'show'])->name('rooms.show')
 Route::get('/room-types', [RoomTypeController::class, 'index'])->name('room-types.index');
 Route::get('/room-types/{roomType}', [RoomTypeController::class, 'show'])->name('room-types.show');
 
-Route::get('/registration', [RegistrationController::class, 'index'])->name('registration.index');
-Route::get('/registration/stats', [RegistrationController::class, 'stats'])->name('registration.stats');
-
 Route::get('/reg', [RegistrationController::class, 'index'])->name('reg.index');
+Route::get('/reg/stats', [RegistrationController::class, 'stats'])->name('reg.stats');
+
+Route::resource('products', ProductController::class);
 
 require __DIR__.'/auth.php';

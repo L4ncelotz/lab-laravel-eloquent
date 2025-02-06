@@ -1,4 +1,6 @@
+import React from 'react';
 import { Head } from '@inertiajs/react';
+import AppLayout from '@/Layouts/AppLayout';
 
 export default function Index({ registrations, total_students, total_registrations }) {
     // คำนวณจำนวนนักศึกษาตามช่วงเกรด
@@ -22,9 +24,9 @@ export default function Index({ registrations, total_students, total_registratio
     const total = Object.values(gradeRanges).reduce((a, b) => a + b, 0);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <Head title="ระบบลงทะเบียน" />
-
+        <AppLayout>
+            <Head title="ลงทะเบียนเรียน" />
+            
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     {/* แสดงสรุปข้อมูล */}
@@ -120,6 +122,6 @@ export default function Index({ registrations, total_students, total_registratio
                     </div>
                 </div>
             </div>
-        </div>
+        </AppLayout>
     );
 } 

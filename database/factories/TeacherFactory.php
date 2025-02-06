@@ -13,10 +13,15 @@ class TeacherFactory extends Factory
 
     public function definition()
     {
-        static $teacherNumber = 1;  // เพิ่มตัวแปร static เพื่อนับลำดับ
+        // หาค่า teacher_id ล่าสุดจากฐานข้อมูล
+        $lastTeacher = Teacher::orderBy('teacher_id', 'desc')->first();
+        $lastNumber = $lastTeacher ? (int)substr($lastTeacher->teacher_id, 1) : 0;
+        
+        // เพิ่มค่าต่อจากค่าล่าสุดที่มีในฐานข้อมูล
+        $nextNumber = $lastNumber + 1;
 
         return [
-            'teacher_id' => 'T' . str_pad($teacherNumber++, 4, '0', STR_PAD_LEFT),  // เพิ่ม teacher_id กลับมา
+            'teacher_id' => 'T' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT),
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),

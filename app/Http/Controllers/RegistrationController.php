@@ -16,20 +16,41 @@ class RegistrationController extends Controller
      */
     public function index()
     {
+        // ดึงข้อมูลการลงทะเบียนพร้อม relationships สำหรับแสดงในตาราง
         $registrations = Register::with(['student', 'course.teacher'])
             ->latest()
-            ->paginate(12);
+            ->paginate();
 
-        // เพิ่มการ debug
-        // dd($registrations->total()); // ดูจำนวนข้อมูลทั้งหมด
-        // dd(Register::count()); // ดูจำนวนข้อมูลทั้งหมดในตาราง registers
-        // dd(Student::count()); // ดูจำนวนข้อมูลทั้งหมดในตาราง students
+        // ดึงข้อมูลทั้งหมดสำหรับคำนวณการกระจายของเกรด
+        $allGrades = Register::select('grade')->get();
 
-        return Inertia::render('StudentReg/Index', [
+        // คำนวณการกระจายของเกรด
+        $gradeDistribution = [
+            'A' => $allGrades->filter(fn($reg) => $reg->grade >= 3.5)->count(),
+            'B' => $allGrades->filter(fn($reg) => $reg->grade >= 2.5 && $reg->grade < 3.5)->count(),
+            'C' => $allGrades->filter(fn($reg) => $reg->grade >= 1.5 && $reg->grade < 2.5)->count(),
+            'D' => $allGrades->filter(fn($reg) => $reg->grade >= 1.0 && $reg->grade < 1.5)->count(),
+            'F' => $allGrades->filter(fn($reg) => $reg->grade < 1.0)->count(),
+        ];
+
+        // นับจำนวนนักศึกษาที่ไม่ซ้ำกัน
+        $total_students = Register::select('student_id')
+            ->distinct()
+            ->count();
+
+        // นับจำนวนการลงทะเบียนทั้งหมด
+        $total_registrations = Register::count();
+
+        // คำนวณเกรดเฉลี่ยรวม
+        $average_grade = Register::avg('grade');
+
+        return Inertia::render('Registration/Index', [
             'registrations' => $registrations,
+            'total_students' => $total_students,
+            'total_registrations' => $total_registrations,
+            'average_grade' => round($average_grade, 2),
+            'grade_distribution' => $gradeDistribution,
             'filters' => request()->all(['search', 'field', 'direction']),
-            'total_students' => Student::count(),
-            'total_registrations' => Register::count(),
         ]);
     }
 
